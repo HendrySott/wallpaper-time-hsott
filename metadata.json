@@ -1,8 +1,9 @@
 {
   "name": "Wallpaper Time",
-  "description": "Change desktop wallpaper dynamically based on the time of day. Configure different wallpapers for different hours.",
+  "description": "Change desktop wallpaper dynamically based on the time of day. Configure different wallpapers for different hours. Optimized by AI.",
   "uuid": "wallpaper-time@hsott",
   "shell-version": ["50"],
   "version": 1,
+  "url": "https://github.com/hsott/wallpaper-time",
   "settings-schema": "org.gnome.shell.extensions.wallpaper-time"
 }

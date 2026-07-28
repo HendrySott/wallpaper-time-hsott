@@ -7,6 +7,7 @@ import Adw from 'gi://Adw';
 import { ExtensionPreferences } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
 export default class WallpaperTimePreferences extends ExtensionPreferences {
+    // Build the entire preferences window
     async fillPreferencesWindow(window) {
         const settings = this.getSettings(this.metadata['settings-schema']);
 
@@ -23,8 +24,10 @@ export default class WallpaperTimePreferences extends ExtensionPreferences {
         });
         page.add(group);
 
+        // Keep track of all currently displayed rows so we can rebuild the UI
         let currentRows = [];
 
+        // Remove all existing row widgets and re-create them from settings
         const rebuildList = () => {
             for (const row of currentRows)
                 group.remove(row);
@@ -38,6 +41,7 @@ export default class WallpaperTimePreferences extends ExtensionPreferences {
                 currentRows.push(row);
             }
 
+            // "Add Time Slot" button at the bottom of the list
             const addBtn = new Gtk.Button({
                 label: 'Add Time Slot',
                 cssClasses: ['suggested-action'],
@@ -59,6 +63,7 @@ export default class WallpaperTimePreferences extends ExtensionPreferences {
         rebuildList();
     }
 
+    // Create a single row with time spinners, a file chooser, and a delete button
     _createEntryRow(settings, index, time, uri, window, onChanged) {
         const [hStr, mStr] = (time || '12:00').split(':');
         let hours = parseInt(hStr, 10);
@@ -66,6 +71,7 @@ export default class WallpaperTimePreferences extends ExtensionPreferences {
         if (isNaN(hours)) hours = 12;
         if (isNaN(minutes)) minutes = 0;
 
+        // Extract the local file path from the file:// URI for display
         const filename = uri
             ? decodeURIComponent(uri.replace(/^file:\/\//, ''))
             : 'No file selected';
@@ -75,6 +81,7 @@ export default class WallpaperTimePreferences extends ExtensionPreferences {
             subtitle: filename,
         });
 
+        // Time picker: hour and minute spin buttons
         const timeBox = new Gtk.Box({ orientation: Gtk.Orientation.HORIZONTAL, spacing: 2 });
         const hourSpin = Gtk.SpinButton.new_with_range(0, 23, 1);
         hourSpin.valign = Gtk.Align.CENTER;
@@ -88,6 +95,7 @@ export default class WallpaperTimePreferences extends ExtensionPreferences {
         timeBox.append(minSpin);
         row.add_prefix(timeBox);
 
+        // "Choose file" button — opens a native file picker for image selection
         const chooseIcon = new Gtk.Image({ icon_name: 'document-open-symbolic' });
         const chooseBtn = new Gtk.Button({ child: chooseIcon });
         chooseBtn.tooltip_text = 'Choose wallpaper image';
@@ -119,6 +127,7 @@ export default class WallpaperTimePreferences extends ExtensionPreferences {
         });
         row.add_suffix(chooseBtn);
 
+        // "Delete" button — removes this time slot from the list
         const delIcon = new Gtk.Image({ icon_name: 'user-trash-symbolic' });
         const delBtn = new Gtk.Button({ child: delIcon });
         delBtn.tooltip_text = 'Remove this time slot';
@@ -131,6 +140,7 @@ export default class WallpaperTimePreferences extends ExtensionPreferences {
         });
         row.add_suffix(delBtn);
 
+        // Persist time changes back to settings when the user adjusts spinners
         let updating = false;
         const updateTime = () => {
             if (updating) return;
