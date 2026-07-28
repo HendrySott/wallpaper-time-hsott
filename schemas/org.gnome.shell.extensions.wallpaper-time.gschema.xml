@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.wallpaper-time"
+          path="/org/gnome/shell/extensions/wallpaper-time/">
+    <key name="wallpaper-list" type="as">
+      <default>[]</default>
+      <summary>List of wallpaper time entries</summary>
+      <description>Array of strings in "HH:MM,file:///path/to/image" format. Each entry defines a time and the corresponding wallpaper to use from that time onward, until the next scheduled time.</description>
+    </key>
+  </schema>
+</schemalist>
